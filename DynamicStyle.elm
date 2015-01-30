@@ -59,6 +59,7 @@ Change styles when the user pushes on element. For example,
 pressure [("color","black","blue")] will render black text normally, but
 blue text when the user pushes the mouse down on the element.
 -}
+pressure : List (CSSKey,CSSValue,CSSValue) -> List Attribute
 pressure = pressure' []
 
 {-|
