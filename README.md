@@ -10,7 +10,7 @@ For example, the following achieves the same effect as setting the
 div (hover [("color","blue","lightblue")]) [text "so cool!"]
 ```
 
-You may user the primed versions as shorthand to provide a base list of
+You may use the primed versions as shorthand to provide a base list of
 styles, like this:
 
 ```haskell
