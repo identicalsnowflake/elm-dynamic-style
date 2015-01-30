@@ -1,0 +1,14 @@
+{
+    "version": "1.0.0",
+    "summary": "Simple dynamic styles for Elm",
+    "repository": "https://github.com/identicalsnowflake/elm-dynamic-style.git",
+    "license": "BSD3",
+    "source-directories": [
+        "."
+    ],
+    "exposed-modules": ["DynamicStyle"],
+    "dependencies": {
+        "elm-lang/core": "1.1.0 <= v < 2.0.0",
+        "evancz/elm-html": "2.0.0 <= v < 3.0.0"
+    }
+}
