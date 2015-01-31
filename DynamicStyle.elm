@@ -68,6 +68,19 @@ Shorthand to add a list of static base styles.
 pressure' : List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
 pressure' = cssStateEffect ["onmouseup","onmouseout"] "onmousedown"
 
+{-|
+Change styles when the user focuses on element. For example,
+pressure [("border-color","black","blue")] will render a black border
+normally, but a blue border when the user focuses on the element.
+-}
+focus : List (CSSKey,CSSValue,CSSValue) -> List Attribute
+focus = focus' []
+
+{-|
+Shorthand to add a list of static base styles.
+-}
+focus' : List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
+focus' = cssStateEffect ["onblur"] "onfocus"
 
 {-|
 Construct your own stateful effects by providing a list of JavaScript hooks
