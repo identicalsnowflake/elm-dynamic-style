@@ -21,6 +21,17 @@ div (hover'
     [text "wow"]
 ```
 
+Also interacts nicely with my typed styles library, like so:
+
+```haskell
+div (hover'
+    [ fontSize 30 px
+    , padding 20 px
+    , textCenter]
+    [ color' black blue ])
+    [text "wow"]
+```
+
 Completely painless!
 
 * Note: the effects in this library consume whatever JS hooks are needed
