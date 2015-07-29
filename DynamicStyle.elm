@@ -1,6 +1,10 @@
-module DynamicStyle where
+module DynamicStyle
+    (hover, hover', pressure, pressure', focus, focus', cssStateEffect) where
 
 {-|
+
+@docs hover, hover', pressure, pressure', focus, focus', cssStateEffect
+
 # Library for simple, dynamic style effects
 
 The goal of this library is make locally stateful, declarative CSS effects
