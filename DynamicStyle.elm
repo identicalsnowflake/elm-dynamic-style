@@ -30,10 +30,10 @@ an event, you can simply make a wrapper element and hook its events.
 
 -}
 
-import Html(Attribute)
-import Html.Attributes(style,attribute)
-import String(toUpper,toLower,left,dropLeft,join,split)
-import List(map,foldl)
+import Html exposing (Attribute)
+import Html.Attributes exposing (style, attribute)
+import String exposing (toUpper, toLower, left, dropLeft, join, split)
+import List exposing (map, foldl)
 
 type alias CSSKey = String
 type alias CSSValue = String
