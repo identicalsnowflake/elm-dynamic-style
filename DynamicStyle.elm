@@ -30,10 +30,10 @@ an event, you can simply make a wrapper element and hook its events.
 
 -}
 
-import Html(Attribute)
-import Html.Attributes(style,attribute)
-import String(toUpper,toLower,left,dropLeft,join,split)
-import List(map,foldl)
+import Html exposing (Attribute)
+import Html.Attributes exposing (style, attribute)
+import String exposing (toUpper, toLower, left, dropLeft, join, split)
+import List exposing (map, foldl)
 
 type alias CSSKey = String
 type alias CSSValue = String
@@ -45,13 +45,13 @@ Change styles when the user hovers over an element. For example,
 hover [("color","black","blue")] will render black text normally, but
 blue text when the user hovers over the element.
 -}
-hover : List (CSSKey,CSSValue,CSSValue) -> List Attribute
+hover : List (CSSKey, CSSValue, CSSValue) -> List Attribute
 hover = hover' []
 
 {-|
 Shorthand to add a list of static base styles.
 -}
-hover' : List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
+hover' : List (CSSKey, CSSValue) -> List (CSSKey, CSSValue, CSSValue) -> List Attribute
 hover' = cssStateEffect ["onmouseout"] "onmouseover"
 
 {-|
@@ -59,27 +59,27 @@ Change styles when the user pushes on element. For example,
 pressure [("color","black","blue")] will render black text normally, but
 blue text when the user pushes the mouse down on the element.
 -}
-pressure : List (CSSKey,CSSValue,CSSValue) -> List Attribute
+pressure : List (CSSKey, CSSValue, CSSValue) -> List Attribute
 pressure = pressure' []
 
 {-|
 Shorthand to add a list of static base styles.
 -}
-pressure' : List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
-pressure' = cssStateEffect ["onmouseup","onmouseout"] "onmousedown"
+pressure' : List (CSSKey, CSSValue) -> List (CSSKey, CSSValue, CSSValue) -> List Attribute
+pressure' = cssStateEffect ["onmouseup", "onmouseout"] "onmousedown"
 
 {-|
 Change styles when the user focuses on element. For example,
 pressure [("border-color","black","blue")] will render a black border
 normally, but a blue border when the user focuses on the element.
 -}
-focus : List (CSSKey,CSSValue,CSSValue) -> List Attribute
+focus : List (CSSKey, CSSValue, CSSValue) -> List Attribute
 focus = focus' []
 
 {-|
 Shorthand to add a list of static base styles.
 -}
-focus' : List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
+focus' : List (CSSKey, CSSValue) -> List (CSSKey, CSSValue, CSSValue) -> List Attribute
 focus' = cssStateEffect ["onblur"] "onfocus"
 
 {-|
@@ -87,7 +87,7 @@ Construct your own stateful effects by providing a list of JavaScript hooks
 to indicate an inactive state, a hook to indicate the active state, static
 styles, and a tuple-map for your dynamic styles.
 -}
-cssStateEffect : List JSEventAttribute -> JSEventAttribute -> List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
+cssStateEffect : List JSEventAttribute -> JSEventAttribute -> List (CSSKey, CSSValue) -> List (CSSKey, CSSValue, CSSValue) -> List Attribute
 cssStateEffect jsEventInactives jsEventActive baseState hoverState =
     let jsName cssAttr = (\s -> toLower (left 1 s) ++ dropLeft 1 s)
         <| join ""
