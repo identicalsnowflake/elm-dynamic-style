@@ -1,7 +1,7 @@
 {
     "version": "1.2.0",
     "summary": "Simple dynamic styles for Elm (hover, focus, etc.)",
-    "repository": "https://github.com/identicalsnowflake/elm-dynamic-style.git",
+    "repository": "https://github.com/garetht/elm-dynamic-style.git",
     "license": "BSD3",
     "source-directories": [
         "."
