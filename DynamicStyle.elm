@@ -110,10 +110,34 @@ focus' =
     cssStateEffect [ "onblur" ] "onfocus"
 
 
-{-|
-Construct your own stateful effects by providing a list of JavaScript hooks
-to indicate an inactive state, a hook to indicate the active state, static
-styles, and a tuple-map for your dynamic styles.
+{-| Construct your own stateful effects.
+    
+    Provide:
+      - A list of events that deactivate your effect
+      - One event that activates your effect
+      - A list of styles (key, value) to apply constantly (the event styles are 
+      - A list of styles (key, valueIfInactive, valueIfActive) that depend on the stateful effect
+    
+    A list of attributes will be generated to implement the effect, using inline js and css
+    
+    
+    Example:
+      div [
+        cssStateEffect
+          [ "onmouseup", "onmouseout" ]
+          "onmousedown"
+          [ ("constant-style", "style") ]
+          [ ("event-style", "inactive", "active") ]
+      ]
+      []
+    
+    Will generate the following HTML:
+      <div
+        style="constant-style:style;event-style:inactive"
+        onmouseup="this.style.eventStyle='inactive';"
+        onmouseout="this.style.eventStyle='inactive';"
+        onmousedown="this.style.eventStyle='active';"
+      ></div>
 -}
 cssStateEffect : List JSEventAttribute -> JSEventAttribute -> List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
 cssStateEffect jsEventInactives jsEventActive constantStyles dynamicStyles =
