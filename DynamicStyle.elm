@@ -116,9 +116,8 @@ to indicate an inactive state, a hook to indicate the active state, static
 styles, and a tuple-map for your dynamic styles.
 -}
 cssStateEffect : List JSEventAttribute -> JSEventAttribute -> List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
-cssStateEffect jsEventInactives jsEventActive baseState hoverState =
+cssStateEffect jsEventInactives jsEventActive constantStyles dynamicStyles =
   let
-    applyToFirstChar : (String -> String) -> String -> String
     applyToFirstChar f s =
         f (String.left 1 s) ++ String.dropLeft 1 s
     
@@ -137,22 +136,19 @@ cssStateEffect jsEventInactives jsEventActive baseState hoverState =
           (\(a,b) x -> x ++ "this.style." ++ jsName a ++ "='"++b++"';")
           ""
     
-    inactiveAttribute (a, b, _) =
-        (a, b)
+    inactiveStyles =
+        map (\(a, b, _) -> (a, b)) dynamicStyles
     
-    activeAttribute (a, _, c) =
-        (a, c)
+    activeStyles =
+        map (\(a, _, c) -> (a, c)) dynamicStyles
+    
+    styleUpdater : List (CSSKey, CSSValue) -> JSEventAttribute -> Attribute
+    styleUpdater styles event =
+        attribute event (toJS styles)
     
   in
-    [ style (baseState ++ map inactiveAttribute hoverState)
-    , attribute
-        jsEventActive
-        (toJS <| map activeAttribute hoverState)
+    [ style (constantStyles ++ inactiveStyles)
+    , styleUpdater activeStyles jsEventActive
     ]
-    ++ map
-      (\inactive ->
-          attribute
-            inactive
-            (toJS <| map inactiveAttribute hoverState)
-      )
-      jsEventInactives
+    ++ map (styleUpdater inactiveStyles) jsEventInactives
+
