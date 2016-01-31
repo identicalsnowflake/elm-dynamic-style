@@ -115,19 +115,44 @@ Construct your own stateful effects by providing a list of JavaScript hooks
 to indicate an inactive state, a hook to indicate the active state, static
 styles, and a tuple-map for your dynamic styles.
 -}
-cssStateEffect : List JSEventAttribute -> JSEventAttribute -> List ( CSSKey, CSSValue ) -> List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
+cssStateEffect : List JSEventAttribute -> JSEventAttribute -> List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
 cssStateEffect jsEventInactives jsEventActive baseState hoverState =
-    let
-        jsName cssAttr =
-            (\s -> toLower (left 1 s) ++ dropLeft 1 s)
-                <| join ""
-                <| map (\s -> toUpper (left 1 s) ++ dropLeft 1 s)
-                <| split "-" cssAttr
-    in
-        let
-            toJS attrs = foldl (\( a, b ) x -> x ++ "this.style." ++ jsName a ++ "='" ++ b ++ "';") "" attrs
-        in
-            [ style (baseState ++ map (\( a, b, _ ) -> ( a, b )) hoverState)
-            , attribute jsEventActive <| toJS <| map (\( a, _, c ) -> ( a, c )) hoverState
-            ]
-                ++ map (\inactive -> attribute inactive <| toJS <| map (\( a, b, _ ) -> ( a, b )) hoverState) jsEventInactives
+  let
+    applyToFirstChar : (String -> String) -> String -> String
+    applyToFirstChar f s =
+        f (String.left 1 s) ++ String.dropLeft 1 s
+    
+    -- takes css property to js equivalent
+    --     jsName "border-bottom-width" == "borderBottomWidth"
+    jsName : CSSKey -> String
+    jsName =
+        applyToFirstChar String.toLower
+        << String.join ""
+        << List.map (applyToFirstChar String.toUpper)
+        << String.split "-"
+    
+    toJS : List (CSSKey, CSSValue) -> String
+    toJS =
+        List.foldl
+          (\(a,b) x -> x ++ "this.style." ++ jsName a ++ "='"++b++"';")
+          ""
+    
+    inactiveAttribute (a, b, _) =
+        (a, b)
+    
+    activeAttribute (a, _, c) =
+        (a, c)
+    
+  in
+    [ style (baseState ++ map inactiveAttribute hoverState)
+    , attribute
+        jsEventActive
+        (toJS <| map activeAttribute hoverState)
+    ]
+    ++ map
+      (\inactive ->
+          attribute
+            inactive
+            (toJS <| map inactiveAttribute hoverState)
+      )
+      jsEventInactives
