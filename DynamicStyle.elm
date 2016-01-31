@@ -139,7 +139,12 @@ focus' =
         onmousedown="this.style.eventStyle='active';"
       ></div>
 -}
-cssStateEffect : List JSEventAttribute -> JSEventAttribute -> List (CSSKey,CSSValue) -> List (CSSKey,CSSValue,CSSValue) -> List Attribute
+cssStateEffect :
+    List JSEventAttribute
+    -> JSEventAttribute
+    -> List (CSSKey,CSSValue)
+    -> List (CSSKey,CSSValue,CSSValue)
+    -> List Attribute
 cssStateEffect jsEventInactives jsEventActive constantStyles dynamicStyles =
   let
     applyToFirstChar f s =
