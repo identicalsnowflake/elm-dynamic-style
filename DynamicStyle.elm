@@ -162,7 +162,7 @@ cssStateEffect jsEventInactives jsEventActive constantStyles dynamicStyles =
     toJS : List (CSSKey, CSSValue) -> String
     toJS =
         List.foldl
-          (\(a,b) x -> x ++ "this.style." ++ jsName a ++ "='"++b++"';")
+          (\(k,v) x -> x ++ "this.style." ++ jsName k ++ "='"++v++"';")
           ""
     
     inactiveStyles =
