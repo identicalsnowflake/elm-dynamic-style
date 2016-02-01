@@ -115,29 +115,10 @@ focus' =
     Provide:
       - A list of events that deactivate your effect
       - One event that activates your effect
-      - A list of styles (key, value) to apply constantly (the event styles are 
+      - A list of styles (key, value) to apply constantly (the inactive event styles are added to the provide styles)
       - A list of styles (key, valueIfInactive, valueIfActive) that depend on the stateful effect
     
     A list of attributes will be generated to implement the effect, using inline js and css
-    
-    
-    Example:
-      div [
-        cssStateEffect
-          [ "onmouseup", "onmouseout" ]
-          "onmousedown"
-          [ ("constant-style", "style") ]
-          [ ("event-style", "inactive", "active") ]
-      ]
-      []
-    
-    Will generate the following HTML:
-      <div
-        style="constant-style:style;event-style:inactive"
-        onmouseup="this.style.eventStyle='inactive';"
-        onmouseout="this.style.eventStyle='inactive';"
-        onmousedown="this.style.eventStyle='active';"
-      ></div>
 -}
 cssStateEffect :
     List JSEventAttribute
