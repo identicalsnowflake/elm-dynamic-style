@@ -49,7 +49,7 @@ type alias CSSValue =
     String
 
 {-|
-THe name of a JavaScript event attribute.
+The name of a JavaScript event attribute.
 -}
 type alias JSEventAttribute =
     String
