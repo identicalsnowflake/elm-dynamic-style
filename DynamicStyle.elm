@@ -11,16 +11,23 @@ The goal of this library is make locally stateful, declarative CSS effects
 For example, the following achieves the same effect as setting the
 :hover attribute in your stylesheet:
 
-    div (hover [("color","blue","lightblue")]) [text "so cool!"]
+    div
+      ( hover
+          [ ("color","blue","lightblue") ]
+      )
+      [ text "so cool!" ]
 
 You may user the primed versions as shorthand to provide a base list of
 styles, like this:
 
-    div (hover'
-        [ ("font-size","20px")
-        , ("font-face","Droid Sans Mono")]
-        [("color","blue","lightblue")])
-        [text "wow"]
+    div
+      ( hover'
+          [ ("font-size","20px")
+          , ("font-face","Droid Sans Mono")
+          ]
+          [ ("color","blue","lightblue") ]
+      )
+      [ text "wow" ]
 
 Completely painless!
 
