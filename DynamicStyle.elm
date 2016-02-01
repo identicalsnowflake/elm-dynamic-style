@@ -34,8 +34,7 @@ an event, you can simply make a wrapper element and hook its events.
 
 import Html exposing (Attribute)
 import Html.Attributes exposing (style, attribute)
-import String exposing (toUpper, toLower, left, dropLeft, join, split)
-import List exposing (map, foldl)
+import String
 
 {-|
 The key for a CSS property.
@@ -147,10 +146,10 @@ cssStateEffect jsEventInactives jsEventActive constantStyles dynamicStyles =
           ""
     
     inactiveStyles =
-        map (\(a, b, _) -> (a, b)) dynamicStyles
+        List.map (\(a, b, _) -> (a, b)) dynamicStyles
     
     activeStyles =
-        map (\(a, _, c) -> (a, c)) dynamicStyles
+        List.map (\(a, _, c) -> (a, c)) dynamicStyles
     
     styleUpdater : List (CSSKey, CSSValue) -> JSEventAttribute -> Attribute
     styleUpdater styles event =
@@ -160,5 +159,5 @@ cssStateEffect jsEventInactives jsEventActive constantStyles dynamicStyles =
     [ style (constantStyles ++ inactiveStyles)
     , styleUpdater activeStyles jsEventActive
     ]
-    ++ map (styleUpdater inactiveStyles) jsEventInactives
+    ++ List.map (styleUpdater inactiveStyles) jsEventInactives
 
