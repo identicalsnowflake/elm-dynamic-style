@@ -11,16 +11,23 @@ The goal of this library is make locally stateful, declarative CSS effects
 For example, the following achieves the same effect as setting the
 :hover attribute in your stylesheet:
 
-    div (hover [("color","blue","lightblue")]) [text "so cool!"]
+    div
+      ( hover
+          [ ("color","blue","lightblue") ]
+      )
+      [ text "so cool!" ]
 
 You may user the primed versions as shorthand to provide a base list of
 styles, like this:
 
-    div (hover'
-        [ ("font-size","20px")
-        , ("font-face","Droid Sans Mono")]
-        [("color","blue","lightblue")])
-        [text "wow"]
+    div
+      ( hover'
+          [ ("font-size","20px")
+          , ("font-face","Droid Sans Mono")
+          ]
+          [ ("color","blue","lightblue") ]
+      )
+      [ text "wow" ]
 
 Completely painless!
 
@@ -34,8 +41,7 @@ an event, you can simply make a wrapper element and hook its events.
 
 import Html exposing (Attribute)
 import Html.Attributes exposing (style, attribute)
-import String exposing (toUpper, toLower, left, dropLeft, join, split)
-import List exposing (map, foldl)
+import String
 
 {-|
 The key for a CSS property.
@@ -50,7 +56,7 @@ type alias CSSValue =
     String
 
 {-|
-THe name of a JavaScript event attribute.
+The name of a JavaScript event attribute.
 -}
 type alias JSEventAttribute =
     String
@@ -58,7 +64,10 @@ type alias JSEventAttribute =
 
 {-|
 Change styles when the user hovers over an element. For example,
-hover [("color","black","blue")] will render black text normally, but
+
+    hover [("color","black","blue")]
+
+will render black text normally, but
 blue text when the user hovers over the element.
 -}
 hover : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
@@ -76,7 +85,10 @@ hover' =
 
 {-|
 Change styles when the user pushes on element. For example,
-pressure [("color","black","blue")] will render black text normally, but
+
+    pressure [("color","black","blue")]
+
+will render black text normally, but
 blue text when the user pushes the mouse down on the element.
 -}
 pressure : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
@@ -94,7 +106,10 @@ pressure' =
 
 {-|
 Change styles when the user focuses on element. For example,
-pressure [("border-color","black","blue")] will render a black border
+
+    pressure [("border-color","black","blue")]
+
+will render a black border
 normally, but a blue border when the user focuses on the element.
 -}
 focus : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
@@ -111,23 +126,55 @@ focus' =
 
 
 {-|
-Construct your own stateful effects by providing a list of JavaScript hooks
-to indicate an inactive state, a hook to indicate the active state, static
-styles, and a tuple-map for your dynamic styles.
+Construct your own stateful effects.
+
+Provide:
+- A list of events that deactivate your effect
+- One event that activates your effect
+- A list of styles (key, value) to apply constantly (the inactive event styles are added to these)
+- A list of styles (key, valueIfInactive, valueIfActive) that depend on the stateful effect
+
+A list of attributes will be generated to implement the effect, using inline js and css
 -}
-cssStateEffect : List JSEventAttribute -> JSEventAttribute -> List ( CSSKey, CSSValue ) -> List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
-cssStateEffect jsEventInactives jsEventActive baseState hoverState =
-    let
-        jsName cssAttr =
-            (\s -> toLower (left 1 s) ++ dropLeft 1 s)
-                <| join ""
-                <| map (\s -> toUpper (left 1 s) ++ dropLeft 1 s)
-                <| split "-" cssAttr
-    in
-        let
-            toJS attrs = foldl (\( a, b ) x -> x ++ "this.style." ++ jsName a ++ "='" ++ b ++ "';") "" attrs
-        in
-            [ style (baseState ++ map (\( a, b, _ ) -> ( a, b )) hoverState)
-            , attribute jsEventActive <| toJS <| map (\( a, _, c ) -> ( a, c )) hoverState
-            ]
-                ++ map (\inactive -> attribute inactive <| toJS <| map (\( a, b, _ ) -> ( a, b )) hoverState) jsEventInactives
+cssStateEffect :
+    List JSEventAttribute
+    -> JSEventAttribute
+    -> List (CSSKey,CSSValue)
+    -> List (CSSKey,CSSValue,CSSValue)
+    -> List Attribute
+cssStateEffect jsEventInactives jsEventActive constantStyles dynamicStyles =
+  let
+    applyToFirstChar f s =
+        f (String.left 1 s) ++ String.dropLeft 1 s
+    
+    -- takes css property to js equivalent
+    --     jsName "border-bottom-width" == "borderBottomWidth"
+    jsName : CSSKey -> String
+    jsName =
+        applyToFirstChar String.toLower
+        << String.join ""
+        << List.map (applyToFirstChar String.toUpper)
+        << String.split "-"
+    
+    toJS : List (CSSKey, CSSValue) -> String
+    toJS =
+        List.foldl
+          (\(k,v) x -> x ++ "this.style." ++ jsName k ++ "='"++v++"';")
+          ""
+    
+    inactiveStyles =
+        List.map (\(a, b, _) -> (a, b)) dynamicStyles
+    
+    activeStyles =
+        List.map (\(a, _, c) -> (a, c)) dynamicStyles
+    
+    styleUpdater : List (CSSKey, CSSValue) -> JSEventAttribute -> Attribute
+    styleUpdater styles event =
+        attribute event (toJS styles)
+    
+  in
+    [ style (constantStyles ++ inactiveStyles)
+    , styleUpdater activeStyles jsEventActive
+    ]
+    ++ List.map (styleUpdater inactiveStyles) jsEventInactives
+

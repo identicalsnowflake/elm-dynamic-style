@@ -1,8 +1,8 @@
 {
-    "version": "1.0.2",
+    "version": "1.0.3",
     "summary": "Simple dynamic styles for Elm (hover, focus, etc.)",
     "repository": "https://github.com/garetht/elm-dynamic-style.git",
-    "license": "BSD3",
+    "license": "MIT",
     "source-directories": [
         "."
     ],
