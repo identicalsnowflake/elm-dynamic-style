@@ -110,14 +110,14 @@ focus' =
 
 
 {-| Construct your own stateful effects.
-    
-    Provide:
-      - A list of events that deactivate your effect
-      - One event that activates your effect
-      - A list of styles (key, value) to apply constantly (the inactive event styles are added to these)
-      - A list of styles (key, valueIfInactive, valueIfActive) that depend on the stateful effect
-    
-    A list of attributes will be generated to implement the effect, using inline js and css
+
+Provide:
+- A list of events that deactivate your effect
+- One event that activates your effect
+- A list of styles (key, value) to apply constantly (the inactive event styles are added to these)
+- A list of styles (key, valueIfInactive, valueIfActive) that depend on the stateful effect
+
+A list of attributes will be generated to implement the effect, using inline js and css
 -}
 cssStateEffect :
     List JSEventAttribute
