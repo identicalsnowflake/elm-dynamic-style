@@ -57,7 +57,10 @@ type alias JSEventAttribute =
 
 {-|
 Change styles when the user hovers over an element. For example,
-hover [("color","black","blue")] will render black text normally, but
+
+    hover [("color","black","blue")]
+
+will render black text normally, but
 blue text when the user hovers over the element.
 -}
 hover : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
@@ -75,7 +78,10 @@ hover' =
 
 {-|
 Change styles when the user pushes on element. For example,
-pressure [("color","black","blue")] will render black text normally, but
+
+    pressure [("color","black","blue")]
+
+will render black text normally, but
 blue text when the user pushes the mouse down on the element.
 -}
 pressure : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
@@ -93,7 +99,10 @@ pressure' =
 
 {-|
 Change styles when the user focuses on element. For example,
-pressure [("border-color","black","blue")] will render a black border
+
+    pressure [("border-color","black","blue")]
+
+will render a black border
 normally, but a blue border when the user focuses on the element.
 -}
 focus : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
@@ -109,7 +118,8 @@ focus' =
     cssStateEffect [ "onblur" ] "onfocus"
 
 
-{-| Construct your own stateful effects.
+{-|
+Construct your own stateful effects.
 
 Provide:
 - A list of events that deactivate your effect
