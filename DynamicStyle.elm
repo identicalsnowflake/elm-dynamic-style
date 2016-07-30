@@ -1,4 +1,4 @@
-module DynamicStyle (..) where
+module DynamicStyle exposing (..)
 
 {-|
 # Library for simple, dynamic style effects
@@ -43,17 +43,20 @@ import Html exposing (Attribute)
 import Html.Attributes exposing (style, attribute)
 import String
 
+
 {-|
 The key for a CSS property.
 -}
 type alias CSSKey =
     String
 
+
 {-|
 The value of a CSS property.
 -}
 type alias CSSValue =
     String
+
 
 {-|
 The name of a JavaScript event attribute.
@@ -70,7 +73,7 @@ Change styles when the user hovers over an element. For example,
 will render black text normally, but
 blue text when the user hovers over the element.
 -}
-hover : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
+hover : List ( CSSKey, CSSValue, CSSValue ) -> List (Attribute msg)
 hover =
     hover' []
 
@@ -78,7 +81,7 @@ hover =
 {-|
 Shorthand to add a list of static base styles.
 -}
-hover' : List ( CSSKey, CSSValue ) -> List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
+hover' : List ( CSSKey, CSSValue ) -> List ( CSSKey, CSSValue, CSSValue ) -> List (Attribute msg)
 hover' =
     cssStateEffect [ "onmouseout" ] "onmouseover"
 
@@ -91,7 +94,7 @@ Change styles when the user pushes on element. For example,
 will render black text normally, but
 blue text when the user pushes the mouse down on the element.
 -}
-pressure : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
+pressure : List ( CSSKey, CSSValue, CSSValue ) -> List (Attribute msg)
 pressure =
     pressure' []
 
@@ -99,7 +102,7 @@ pressure =
 {-|
 Shorthand to add a list of static base styles.
 -}
-pressure' : List ( CSSKey, CSSValue ) -> List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
+pressure' : List ( CSSKey, CSSValue ) -> List ( CSSKey, CSSValue, CSSValue ) -> List (Attribute msg)
 pressure' =
     cssStateEffect [ "onmouseup", "onmouseout" ] "onmousedown"
 
@@ -112,7 +115,7 @@ Change styles when the user focuses on element. For example,
 will render a black border
 normally, but a blue border when the user focuses on the element.
 -}
-focus : List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
+focus : List ( CSSKey, CSSValue, CSSValue ) -> List (Attribute msg)
 focus =
     focus' []
 
@@ -120,7 +123,7 @@ focus =
 {-|
 Shorthand to add a list of static base styles.
 -}
-focus' : List ( CSSKey, CSSValue ) -> List ( CSSKey, CSSValue, CSSValue ) -> List Attribute
+focus' : List ( CSSKey, CSSValue ) -> List ( CSSKey, CSSValue, CSSValue ) -> List (Attribute msg)
 focus' =
     cssStateEffect [ "onblur" ] "onfocus"
 
@@ -139,42 +142,39 @@ A list of attributes will be generated to implement the effect, using inline js 
 cssStateEffect :
     List JSEventAttribute
     -> JSEventAttribute
-    -> List (CSSKey,CSSValue)
-    -> List (CSSKey,CSSValue,CSSValue)
-    -> List Attribute
+    -> List ( CSSKey, CSSValue )
+    -> List ( CSSKey, CSSValue, CSSValue )
+    -> List (Attribute msg)
 cssStateEffect jsEventInactives jsEventActive constantStyles dynamicStyles =
-  let
-    applyToFirstChar f s =
-        f (String.left 1 s) ++ String.dropLeft 1 s
-    
-    -- takes css property to js equivalent
-    --     jsName "border-bottom-width" == "borderBottomWidth"
-    jsName : CSSKey -> String
-    jsName =
-        applyToFirstChar String.toLower
-        << String.join ""
-        << List.map (applyToFirstChar String.toUpper)
-        << String.split "-"
-    
-    toJS : List (CSSKey, CSSValue) -> String
-    toJS =
-        List.foldl
-          (\(k,v) x -> x ++ "this.style." ++ jsName k ++ "='"++v++"';")
-          ""
-    
-    inactiveStyles =
-        List.map (\(a, b, _) -> (a, b)) dynamicStyles
-    
-    activeStyles =
-        List.map (\(a, _, c) -> (a, c)) dynamicStyles
-    
-    styleUpdater : List (CSSKey, CSSValue) -> JSEventAttribute -> Attribute
-    styleUpdater styles event =
-        attribute event (toJS styles)
-    
-  in
-    [ style (constantStyles ++ inactiveStyles)
-    , styleUpdater activeStyles jsEventActive
-    ]
-    ++ List.map (styleUpdater inactiveStyles) jsEventInactives
+    let
+        applyToFirstChar f s =
+            f (String.left 1 s) ++ String.dropLeft 1 s
 
+        -- takes css property to js equivalent
+        --     jsName "border-bottom-width" == "borderBottomWidth"
+        jsName : CSSKey -> String
+        jsName =
+            applyToFirstChar String.toLower
+                << String.join ""
+                << List.map (applyToFirstChar String.toUpper)
+                << String.split "-"
+
+        toJS : List ( CSSKey, CSSValue ) -> String
+        toJS =
+            List.foldl (\( k, v ) x -> x ++ "this.style." ++ jsName k ++ "='" ++ v ++ "';")
+                ""
+
+        inactiveStyles =
+            List.map (\( a, b, _ ) -> ( a, b )) dynamicStyles
+
+        activeStyles =
+            List.map (\( a, _, c ) -> ( a, c )) dynamicStyles
+
+        styleUpdater : List ( CSSKey, CSSValue ) -> JSEventAttribute -> Attribute msg
+        styleUpdater styles event =
+            attribute event (toJS styles)
+    in
+        [ style (constantStyles ++ inactiveStyles)
+        , styleUpdater activeStyles jsEventActive
+        ]
+            ++ List.map (styleUpdater inactiveStyles) jsEventInactives
