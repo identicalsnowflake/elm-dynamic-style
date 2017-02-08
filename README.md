@@ -14,7 +14,7 @@ You may use the primed versions as shorthand to provide a base list of
 styles, like this:
 
 ```haskell
-div (hover'
+div (hover_
     [ ("font-size","20px")
     , ("font-face","Droid Sans Mono")]
     [("color","blue","lightblue")])
@@ -24,11 +24,11 @@ div (hover'
 Also interacts nicely with my typed styles library, like so:
 
 ```haskell
-div (hover'
+div (hover_
     [ fontSize 30 px
     , padding 20 px
     , textCenter]
-    [ color' black blue ])
+    [ color_ black blue ])
     [text "wow"]
 ```
 
