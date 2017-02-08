@@ -1,15 +1,17 @@
 {
-    "version": "1.1.0",
+    "version": "2.0.0",
     "summary": "Simple dynamic styles for Elm (hover, focus, etc.)",
-    "repository": "https://github.com/identicalsnowflake/elm-dynamic-style.git",
-    "license": "BSD3",
+    "repository": "https://github.com/garetht/elm-dynamic-style.git",
+    "license": "MIT",
     "source-directories": [
         "."
     ],
-    "exposed-modules": ["DynamicStyle"],
+    "exposed-modules": [
+        "DynamicStyle"
+    ],
     "dependencies": {
-        "elm-lang/core": "1.1.0 <= v < 2.0.0",
-        "evancz/elm-html": "2.0.0 <= v < 3.0.0"
+        "elm-lang/core": "5.1.1 <= v < 6.0.0",
+        "elm-lang/html": "2.0.0 <= v < 3.0.0"
     },
-    "elm-version": "0.16.0 <= v < 0.17.0"
+    "elm-version": "0.18.0 <= v < 0.19.0"
 }
